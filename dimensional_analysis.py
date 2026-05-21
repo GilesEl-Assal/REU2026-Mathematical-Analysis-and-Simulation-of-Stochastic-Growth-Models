@@ -11,6 +11,7 @@ def fractal_density(num_particles, sticking_prob, size, num_slices):
 
     density_list = []
     radius_list = []
+    min_eval_radius = rmax *.1
     max_eval_radius = rmax*.9
     step_size = max_eval_radius / num_slices
 
