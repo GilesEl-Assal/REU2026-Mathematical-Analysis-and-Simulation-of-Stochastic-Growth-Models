@@ -2,7 +2,8 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Rectangle
-from generator import generate_lattice_dla
+from generators import generate_lattice_dla
+from runtime_analysis import benchmark_dla_scaling
 from scipy.spatial.distance import pdist
 
 grid_size=600

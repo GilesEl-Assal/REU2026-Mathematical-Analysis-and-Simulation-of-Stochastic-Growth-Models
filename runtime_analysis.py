@@ -2,7 +2,8 @@ import cProfile
 import pstats
 import io
 import time
-from generator import generate_lattice_dla
+import numpy as np
+from generators import generate_lattice_dla
 
 
 def benchmark_dla_scaling(particle_counts, grid_size=400):
@@ -38,12 +39,11 @@ def generate_profile_file(particles=8000, grid_size=300):
     
     profiler.disable()
     
-    # DUMP the raw data to a file instead of printing it
+    # put the raw data into a file
     output_filename = "dla_compute.prof"
     profiler.dump_stats(output_filename)
     
     print(f"Profile saved to {output_filename}. Run 'snakeviz {output_filename}' in terminal.")
-
 
 
 
