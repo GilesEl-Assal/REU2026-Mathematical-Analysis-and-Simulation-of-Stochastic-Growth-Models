@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 def generate_lattice_dla(num_particles, sticking_prob, size):
     grid = np.zeros((size, size), dtype=bool)
     cx, cy = size // 2, size // 2

@@ -1,4 +1,5 @@
 import numpy as np
+import time
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Rectangle
 from generator import generate_lattice_dla
@@ -7,7 +8,7 @@ from scipy.spatial.distance import pdist
 grid_size=600
 num_particles=6000
 sticking_prob=1
-dla_result, final_rmax, xorigin, yorigin = generate_lattice_dla(num_particles=num_particles, size=grid_size,sticking_prob=sticking_prob)
+#dla_result, final_rmax, xorigin, yorigin = generate_lattice_dla(num_particles=num_particles, size=grid_size,sticking_prob=sticking_prob)
 
 
 def calculate_density_correlation(grid, max_radius):
@@ -54,11 +55,65 @@ def calculate_density_correlation(grid, max_radius):
 
     return r_full, Cr_full, log_r_fit, slope, intercept, Df_calculated, min_fit_r, max_fit_r
 
-r_data, Cr_data, log_r_fit, slope, intercept, Df, min_r, max_r = calculate_density_correlation(dla_result, final_rmax)
+#r_data, Cr_data, log_r_fit, slope, intercept, Df, min_r, max_r = calculate_density_correlation(dla_result, final_rmax)
+
+
+
+
+
+# Define the test intervals (e.g., from 1000 to 10000, stepping by 1000)
+test_counts = np.arange(1000, 11000, 500)
+
+N_array, time_array = benchmark_dla_scaling(test_counts, grid_size=400)
+
+log_N = np.log10(N_array)
+log_T = np.log10(time_array)
+
+# Fit a line (degree 1 polyfit)
+slope, intercept = np.polyfit(log_N, log_T, 1)
+
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6), facecolor='black')
+fig.suptitle(f"DLA Runtime Scaling Analysis\nEmpirical Complexity: $mathcal{{O}}(N^{{{slope:.2f}}})$", color='white', fontsize=14)
+
+# --- Left Subplot: Linear Scale ---
+ax1.plot(N_array, time_array, marker='o', color='cyan', linewidth=2)
+ax1.set_title("Linear Scale (Raw Runtime)", color='white')
+ax1.set_xlabel("Particle Count ($N$)", color='white')
+ax1.set_ylabel("Execution Time (seconds)", color='white')
+
+# --- Right Subplot: Log-Log Scale ---
+ax2.scatter(log_N, log_T, color='white', label='Benchmark Data')
+fit_line = slope * log_N + intercept
+ax2.plot(log_N, fit_line, color='red', linewidth=2, label=f'Fit: slope = {slope:.2f}')
+
+ax2.set_title("Log-Log Scale (Power Law Fit)", color='white')
+ax2.set_xlabel("$log_{10}(N)$", color='white')
+ax2.set_ylabel("$log_{10}(Time)$", color='white')
+ax2.legend(facecolor='black', edgecolor='white', labelcolor='white')
+
+# --- Global Formatting ---
+for ax in [ax1, ax2]:
+    ax.set_facecolor('black')
+    ax.tick_params(colors='white')
+    for spine in ax.spines.values():
+        spine.set_edgecolor('white')
+    ax.grid(True, alpha=0.2)
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+
+
+
+
+
 
 '''
 Fractal Plot
-'''
 
 
 fig, ax = plt.subplots(figsize=(8,8), facecolor='black')
@@ -90,8 +145,15 @@ ax.legend(loc='upper right', facecolor='black', labelcolor='white')
 plt.title("Lattice DLA with Boundaries", color='white')
 plt.show()
 '''
-Plot 2: Density-Density Correlation
+
+
+
+
+
 '''
+
+Plot 2: Density-Density Correlation
+
 fig2, ax2 = plt.subplots(figsize=(8, 6), facecolor='black')
 
 # Plot full raw data
@@ -119,3 +181,4 @@ ax2.set_ylabel("$log_{10}(C(r))$", color='white')
 ax2.legend(loc='upper right', facecolor='black', edgecolor='white', labelcolor='white')
 
 plt.show()
+'''
